@@ -1,0 +1,12 @@
+- name: Download Hadolint
+  ansible.builtin.get_url:
+    url: "https://github.com/hadolint/hadolint/releases/download/v{{ hadolint_version }}/hadolint-Linux-x86_64"
+    dest: /tmp/hadolint
+
+- name: Install Hadolint
+  become: true
+  ansible.builtin.copy:
+    remote_src: true
+    src: /tmp/hadolint
+    dest: /usr/local/bin/hadolint
+    mode: "0755"

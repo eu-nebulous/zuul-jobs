@@ -1,0 +1,19 @@
+- job:
+    name: nebulous-hadolint
+    description: Run Hadolint on Dockerfile(s).
+    pre-run: playbooks/hadolint/pre.yaml
+    run: playbooks/hadolint/run.yaml
+
+- job:
+    name: nebulous-helm-lint
+    parent: helm-lint
+    description: Run helm lint on Helm charts.
+    vars:
+      helm_version: &helm_version "3.12.0"
+
+- job:
+    name: nebulous-apply-helm-charts
+    parent: apply-helm-charts
+    description: Deploy a Kubernetes cluster and apply charts.
+    vars:
+      helm_version: *helm_version

@@ -1,0 +1,7 @@
+- name: Lint Dockerfile with Hadolint
+  ansible.builtin.command: >-
+    hadolint {{ item }}
+  args:
+    chdir: "{{ zuul_work_dir }}"
+  changed_when: false
+  loop: "{{ dockerfiles }}"

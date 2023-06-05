@@ -2,6 +2,22 @@
     check:
       jobs:
         - nox-linters
+
+        # cross-testing with component-template
+        - opendev-buildset-registry
+        - nebulous-component-template-hadolint: &cross_test_component_template
+            vars:
+              zuul_work_dir: src/opendev.org/nebulous/component-template
+            required-projects:
+              - nebulous/component-template
+        - nebulous-component-template-helm-lint: *cross_test_component_template
+        - nebulous-component-template-apply-helm-charts: *cross_test_component_template
     gate:
       jobs:
         - nox-linters
+
+        # cross-testing with component-template
+        - opendev-buildset-registry
+        - nebulous-component-template-hadolint: *cross_test_component_template
+        - nebulous-component-template-helm-lint: *cross_test_component_template
+        - nebulous-component-template-apply-helm-charts: *cross_test_component_template

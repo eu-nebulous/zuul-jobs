@@ -13,7 +13,18 @@
 
 - job:
     name: nebulous-apply-helm-charts
+    parent: opendev-buildset-registry-consumer
+
+- job:
+    name: nebulous-apply-helm-charts
     parent: apply-helm-charts
+    dependencies:
+      - name: opendev-buildset-registry
+        soft: false
     description: Deploy a Kubernetes cluster and apply charts.
+    roles:
+      - zuul: zuul/zuul-jobs
+    pre-run: playbooks/helm/pre.yaml
     vars:
       helm_version: *helm_version
+      kubernetes_runtime: cri-o

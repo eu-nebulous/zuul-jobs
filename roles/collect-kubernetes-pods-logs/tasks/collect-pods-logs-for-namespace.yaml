@@ -1,0 +1,19 @@
+- name: List pods for namespace
+  command: "kubectl get pod {% if namespace != '' %}-n {{ namespace }}{% endif %} -o=custom-columns=NAME:.metadata.name --no-headers"
+  register: zj_pods
+  failed_when: false
+
+- name: Create pods logs dir for namespace
+  file:
+    path: "{{ ansible_user_dir }}/zuul-output/logs/pods_logs/{{ namespace }}"
+    state: directory
+    mode: 0755
+
+- name: Save pods logs for namespace
+  loop: "{{ zj_pods.stdout_lines | default([]) }}"
+  loop_control:
+    loop_var: zj_pod_name
+  shell: "kubectl logs {{ zj_pod_name }} --all-containers=true {% if namespace != '' %}-n {{ namespace }}{% endif %} &> {{ ansible_user_dir }}/zuul-output/logs/pods_logs/{{ namespace }}/{{ zj_pod_name }}.txt"
+  args:
+    executable: /bin/bash
+  failed_when: false

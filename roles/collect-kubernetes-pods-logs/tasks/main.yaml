@@ -1,0 +1,30 @@
+- name: Create pods logs dir
+  file:
+    path: "{{ ansible_user_dir }}/zuul-output/logs/pods_logs"
+    state: directory
+    mode: 0755
+
+- name: List namespaces
+  command: "kubectl get namespaces -o=custom-columns=NAME:.metadata.name --no-headers"
+  register: zj_kubectl_get_namespaces
+  failed_when: false
+  when: collect_kubernetes_pods_logs_all_namespaces
+
+- name: Save namespaces to a fact
+  set_fact:
+    collect_kubernetes_pods_logs_namespaces: "{{ zj_kubectl_get_namespaces.stdout_lines }}"
+  when: collect_kubernetes_pods_logs_all_namespaces
+
+- name: Collect pods logs for namespace
+  include_tasks: collect-pods-logs-for-namespace.yaml
+  vars:
+    namespace: "{{ zj_namespace }}"
+  loop: "{{ collect_kubernetes_pods_logs_namespaces }}"
+  loop_control:
+    loop_var: zj_namespace
+
+- name: Open pods logs permissions
+  file:
+    dest: "{{ ansible_user_dir }}/zuul-output/logs/pods_logs"
+    mode: u=rwX,g=rX,o=rX
+    recurse: true

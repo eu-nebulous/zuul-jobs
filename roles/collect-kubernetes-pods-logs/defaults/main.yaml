@@ -1,0 +1,2 @@
+collect_kubernetes_pods_logs_all_namespaces: false
+collect_kubernetes_pods_logs_namespaces: [""]

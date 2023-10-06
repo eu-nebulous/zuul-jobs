@@ -1,0 +1,11 @@
+- name: Download Maven
+  get_url:
+    url: "{{ maven_download_url }}"
+    dest: "/tmp/{{ maven_archive_name }}"
+
+- name: Extract Maven Archive
+  unarchive:
+    src: "/tmp/{{ maven_archive_name }}"
+    dest: "/opt"
+    remote_src: yes
+  become: yes

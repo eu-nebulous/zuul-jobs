@@ -30,11 +30,3 @@
 - job:
     name: nebulous-build-java-libraries
     run: playbooks/java-libraries/build.yaml
-
-- job:
-    name: nebulous-upload-java-libraries
-    run: playbooks/java-libraries/upload.yaml
-
-- job:
-    name: nebulous-promote-java-libraries
-    run: playbooks/java-libraries/promote.yaml

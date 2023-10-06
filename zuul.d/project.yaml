@@ -2,7 +2,6 @@
     check:
       jobs:
         - nox-linters
-
         # cross-testing with component-template
         - opendev-buildset-registry
         - nebulous-component-template-hadolint: &cross_test_component_template
@@ -15,7 +14,6 @@
     gate:
       jobs:
         - nox-linters
-
         # cross-testing with component-template
         - opendev-buildset-registry
         - nebulous-component-template-hadolint: *cross_test_component_template

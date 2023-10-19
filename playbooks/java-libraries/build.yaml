@@ -6,9 +6,9 @@
     - name: Build the project with Maven
       shell: mvn clean install -DskipTests
       args:
-        chdir: "{{ project_path }}"  # Pointing to the directory with pom.xml
+        chdir: "{{ library_path }}"  # Pointing to the directory with pom.xml
       vars:
-        project_path: "{{ zuul.project.src_dir }}/{{ java_library_path }}"
+        library_path: "{{ zuul.project.src_dir }}/{{ java_libraries[0].context }}"
       environment:
         MAVEN_HOME: "/opt/apache-maven-3.8.8"
         PATH: "{{ ansible_env.PATH }}:/opt/apache-maven-3.8.8/bin"

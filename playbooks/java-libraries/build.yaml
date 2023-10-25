@@ -4,7 +4,7 @@
     - install-maven
   tasks:
     - name: Build the project with Maven
-      shell: mvn clean install -DskipTests
+      shell: mvn clean install
       args:
         chdir: "{{ library_path }}"  # Pointing to the directory with pom.xml
       vars:

@@ -2,13 +2,8 @@
   roles:
     - install-jdk
     - install-maven
-  tasks:
-    - name: Build the project with Maven
-      shell: mvn clean install
-      args:
-        chdir: "{{ library_path }}"  # Pointing to the directory with pom.xml
+    - role: maven
       vars:
-        library_path: "{{ zuul.project.src_dir }}/{{ java_libraries[0].context }}"
-      environment:
-        MAVEN_HOME: "/opt/apache-maven-3.8.8"
-        PATH: "{{ ansible_env.PATH }}:/opt/apache-maven-3.8.8/bin"
+        # TODO: support more
+        maven_pom_dir: "{{ java_libraries[0].context }}"
+        maven_phases: ["install"]

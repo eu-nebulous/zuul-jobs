@@ -34,5 +34,16 @@
         - opendev-buildset-registry:
             files: *nebulous-component-template-apply-helm-charts-files
 
+        # cross-testing with library-template
+        - nebulous-library-template-build-java-libraries:
+            vars:
+              zuul_work_dir: src/opendev.org/nebulous/library-template
+            required-projects:
+              - nebulous/library-template
+            files:
+              - ^playbooks/java-libraries/
+              - ^roles/install-jdk/
+              - ^roles/install-maven/
+
     gate:
       jobs: *check-jobs

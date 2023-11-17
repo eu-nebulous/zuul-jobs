@@ -1,0 +1,9 @@
+- name: Run Maven
+  command:
+    argv: "{{ ['mvn'] + maven_phases }}"
+    chdir: "{{ zuul_work_dir }}/{{ maven_pom_dir }}"
+  vars:
+    maven_home: "/opt/apache-maven-{{ maven_version }}"
+  environment:
+    MAVEN_HOME: "{{ maven_home }}"
+    PATH: "{{ maven_home }}/bin:{{ ansible_env.PATH }}"

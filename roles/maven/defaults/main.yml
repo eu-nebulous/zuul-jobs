@@ -1,0 +1,5 @@
+zuul_work_dir: "{{ zuul.project.src_dir }}"
+
+maven_version: "3.8.8"
+maven_phases: []
+maven_pom_dir: ""

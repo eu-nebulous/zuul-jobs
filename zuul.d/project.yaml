@@ -1,21 +1,38 @@
 - project:
     check:
-      jobs:
+      jobs: &check-jobs
         - nox-linters
+
         # cross-testing with component-template
-        - opendev-buildset-registry
-        - nebulous-component-template-hadolint: &cross_test_component_template
+        - nebulous-component-template-hadolint:
             vars:
               zuul_work_dir: src/opendev.org/nebulous/component-template
             required-projects:
               - nebulous/component-template
-        - nebulous-component-template-helm-lint: *cross_test_component_template
-        - nebulous-component-template-apply-helm-charts: *cross_test_component_template
+            files:
+              - ^playbooks/hadolint/
+              - ^roles/ensure-hadolint/
+              - ^roles/hadolint/
+        - nebulous-component-template-helm-lint:
+            vars:
+              zuul_work_dir: src/opendev.org/nebulous/component-template
+            required-projects:
+              - nebulous/component-template
+            files:
+              # NOTE: hackish way to only run it when its definition changes
+              # as no files exist in this repo that control its behaviour
+              - ^never-existing-file$
+        - nebulous-component-template-apply-helm-charts:
+            vars:
+              zuul_work_dir: src/opendev.org/nebulous/component-template
+            required-projects:
+              - nebulous/component-template
+            files: &nebulous-component-template-apply-helm-charts-files
+              - ^playbooks/helm/
+              - ^playbooks/kubernetes/
+              - ^roles/collect-kubernetes-pods-logs/
+        - opendev-buildset-registry:
+            files: *nebulous-component-template-apply-helm-charts-files
+
     gate:
-      jobs:
-        - nox-linters
-        # cross-testing with component-template
-        - opendev-buildset-registry
-        - nebulous-component-template-hadolint: *cross_test_component_template
-        - nebulous-component-template-helm-lint: *cross_test_component_template
-        - nebulous-component-template-apply-helm-charts: *cross_test_component_template
+      jobs: *check-jobs

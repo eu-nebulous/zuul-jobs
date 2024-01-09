@@ -32,6 +32,21 @@
       retries: 3
       delay: 30
 
+    - name: Generate current timestamp
+      shell: date +%Y%m%d%H%M%S
+      register: current_timestamp
+
+    - name: Copy image using branch name, commit id and current timestamp
+      loop: "{{ zj_image.tags | default(['latest']) }}"
+      loop_control:
+        loop_var: zj_image_tag
+      command: >-
+        skopeo --insecure-policy copy --all {{ zj_artifact_map[zj_image.repository + ':' + zj_image_tag] }} docker://{{ zj_image.repository }}:{{ zuul.branch }}-{{ zuul.commit_id }}-{{ current_timestamp.stdout }}
+      register: result
+      until: result.rc == 0
+      retries: 3
+      delay: 30
+
   always:
     - name: Log out of registry
       command: "skopeo logout {{ zj_image.registry }}"

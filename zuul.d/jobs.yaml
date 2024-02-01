@@ -22,6 +22,7 @@
     roles:
       - zuul: zuul/zuul-jobs
     pre-run: playbooks/helm/pre.yaml
+    run: playbooks/helm/run.yaml
     post-run: playbooks/kubernetes/post.yaml
     vars:
       helm_version: *helm_version

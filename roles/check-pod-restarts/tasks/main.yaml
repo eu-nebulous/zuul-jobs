@@ -1,0 +1,15 @@
+- name: Get pods and their restart counts
+  shell: >
+    kubectl get pods -o=jsonpath="{range .items[*]}{.metadata.name}:{.status.containerStatuses[*].restartCount}{'\n'}{end}"
+  register: pods_restart_counts
+
+- name: Check for pods that have restarted more than the allowed threshold
+  set_fact:
+    unstable_pods: "{{ unstable_pods | default([]) + [item.split(':')[0]] }}"
+  loop: "{{ pods_restart_counts.stdout_lines }}"
+  when: item.split(':')[1] | int >= 3
+
+- name: Report if any pod has restarted too many times
+  fail:
+    msg: "There were some unstable pods: {{ unstable_pods }}"
+  when: unstable_pods | default([]) | length > 0

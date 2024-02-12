@@ -1,3 +1,4 @@
 - hosts: all
   roles:
+    - collect-kubernetes-state
     - collect-kubernetes-pods-logs

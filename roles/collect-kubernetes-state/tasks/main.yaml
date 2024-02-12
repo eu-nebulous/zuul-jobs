@@ -1,0 +1,19 @@
+- name: Create k8s state dir
+  file:
+    path: "{{ ansible_user_dir }}/zuul-output/logs/k8s"
+    state: directory
+    mode: 0755
+
+- name: Collect typical relevant state (wide)
+  shell: "kubectl get all -A -o wide > {{ ansible_user_dir }}/zuul-output/logs/k8s/state.txt"
+  failed_when: false
+
+- name: Collect typical relevant state (yaml)
+  shell: "kubectl get all -A -o yaml > > {{ ansible_user_dir }}/zuul-output/logs/k8s/state.yaml"
+  failed_when: false
+
+- name: Open k8s state permissions
+  file:
+    dest: "{{ ansible_user_dir }}/zuul-output/logs/k8s"
+    mode: u=rwX,g=rX,o=rX
+    recurse: true

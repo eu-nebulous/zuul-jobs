@@ -1,3 +1,10 @@
 - hosts: all
   roles:
     - role: use-buildset-registry
+    - role: clear-firewall
+    - role: ensure-docker
+    - role: ensure-minikube
+    - role: ensure-helm
+  tasks:
+    - name: Start minikube
+      command: minikube start

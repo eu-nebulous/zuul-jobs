@@ -14,10 +14,6 @@
 - job:
     name: nebulous-apply-helm-charts
     parent: opendev-buildset-registry-consumer
-
-- job:
-    name: nebulous-apply-helm-charts
-    parent: apply-helm-charts
     description: Deploy a Kubernetes cluster and apply charts.
     roles:
       - zuul: zuul/zuul-jobs

@@ -30,8 +30,10 @@
             files: &nebulous-component-template-apply-helm-charts-files
               - ^playbooks/helm/
               - ^playbooks/kubernetes/
+              - ^roles/check-pod-restarts/
               - ^roles/collect-kubernetes-pods-logs/
               - ^roles/collect-kubernetes-state/
+              - ^roles/ensure-minikube/
         - opendev-buildset-registry:
             files: *nebulous-component-template-apply-helm-charts-files
 

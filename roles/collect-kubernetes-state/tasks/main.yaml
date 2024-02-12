@@ -9,7 +9,7 @@
   failed_when: false
 
 - name: Collect typical relevant state (yaml)
-  shell: "kubectl get all -A -o yaml > > {{ ansible_user_dir }}/zuul-output/logs/k8s/state.yaml"
+  shell: "kubectl get all -A -o yaml > {{ ansible_user_dir }}/zuul-output/logs/k8s/state.yaml"
   failed_when: false
 
 - name: Open k8s state permissions

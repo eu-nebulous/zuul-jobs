@@ -12,7 +12,7 @@
         loop_var: 'zj_item'
 
     - name: Wait for the deployments
-      command: kubectl wait --for=condition=Available --timeout=120s deployment --all
+      command: kubectl wait --for=condition=Available --timeout=300s deployment --all
 
     - name: Wait for the remaining resources
       include_role:

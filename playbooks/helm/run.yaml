@@ -6,9 +6,17 @@
       vars:
         helm_release_name: "{{ zj_item.key }}"
         helm_chart: "{{ zj_item.value }}"
+        helm_wait_for_pods: false  # we want this once and with more control
       loop: "{{ helm_charts | dict2items }}"
       loop_control:
         loop_var: 'zj_item'
+
+    - name: Wait for the deployments
+      command: kubectl wait --for=condition=Available --timeout=120s deployment --all
+
+    - name: Wait for the remaining resources
+      include_role:
+        name: wait-for-pods
 
     - name: Check pod restarts after helm chart installations
       include_role:

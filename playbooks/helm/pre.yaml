@@ -8,3 +8,48 @@
   tasks:
     - name: Start minikube
       command: minikube start --cpus max --memory max
+
+    - name: Patch minikube docker daemon config to use the buildset registry
+      block:
+        - name: Load minikube docker daemon config
+          command: minikube ssh sudo cat /etc/docker/daemon.json
+          register: daemon_json
+
+        - name: Parse docker minikube daemon config
+          set_fact:
+            daemon_json_parsed: "{{ daemon_json.stdout | from_json }}"
+
+        - name: Add buildset registry to minikube docker daemon config
+          vars:
+            new_entries:
+              registry-mirrors: "['https://{{ buildset_registry_alias }}:{{ buildset_registry.port }}/']"
+          set_fact:
+            new_daemon_json_parsed: "{{ daemon_json_parsed | combine(new_entries) }}"
+
+        - name: Serialise new minikube docker daemon config
+          set_fact:
+            new_daemon_json: "{{ new_daemon_json_parsed | to_json }}"
+
+        - name: Save tmp new minikube docker daemon config
+          copy:
+            content: "{{ new_daemon_json }}"
+            dest: /tmp/minikube_docker_daemon.json
+            mode: 0644
+
+        - name: Copy new minikube docker daemon config
+          command: minikube cp /tmp/minikube_docker_daemon.json /etc/docker/daemon.json
+
+        - name: Clean up tmp new minikube docker daemon config
+          file:
+            path: /tmp/minikube_docker_daemon.json
+            state: absent
+
+        - name: Restart minikube docker daemon
+          command: minikube ssh sudo systemctl restart docker
+
+        - name: Wait for minikube k8s API to be back up
+          command: kubectl get node
+          register: _result
+          until: _result is not failed
+          retries: 30
+          delay: 10

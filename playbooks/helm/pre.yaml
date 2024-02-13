@@ -7,4 +7,4 @@
     - role: ensure-helm
   tasks:
     - name: Start minikube
-      command: minikube start
+      command: minikube start --cpus max --memory max

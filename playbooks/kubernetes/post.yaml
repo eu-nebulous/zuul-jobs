@@ -1,5 +1,6 @@
 - hosts: all
   roles:
     - collect-container-logs  # for some of minikube logs
+    - collect-minikube-logs
     - collect-kubernetes-state
     - collect-kubernetes-pods-logs

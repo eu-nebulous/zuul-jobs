@@ -1,0 +1,23 @@
+- name: Create minikube logs dir
+  file:
+    path: "{{ ansible_user_dir }}/zuul-output/logs/minikube"
+    state: directory
+    mode: 0755
+
+- name: Collect default minikube logs
+  shell: "minikube logs > {{ ansible_user_dir }}/zuul-output/logs/minikube/minikube.txt"
+  failed_when: false
+
+- name: Collect all minikube cri-o logs
+  shell: "minikube ssh 'sudo journalctl -u crio' > {{ ansible_user_dir }}/zuul-output/logs/minikube/crio.txt"
+  failed_when: false
+
+- name: Collect all minikube kubelet logs
+  shell: "minikube ssh 'sudo journalctl -u kubelet' > {{ ansible_user_dir }}/zuul-output/logs/minikube/kubelet.txt"
+  failed_when: false
+
+- name: Open minikube logs permissions
+  file:
+    dest: "{{ ansible_user_dir }}/zuul-output/logs/minikube"
+    mode: u=rwX,g=rX,o=rX
+    recurse: true

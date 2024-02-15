@@ -14,12 +14,8 @@
         - name: Copy registries.conf from the host to minikube
           command: minikube cp /etc/containers/registries.conf /etc/containers/registries.conf
 
-        - name: Restart minikube crio daemon
-          command: minikube ssh sudo systemctl restart crio
+        - name: Signal new config to minikube crio daemon
+          command: "minikube ssh 'sudo pkill -HUP crio'"
 
-        - name: Wait for minikube k8s API to be back up
-          command: kubectl get node
-          register: _result
-          until: _result is not failed
-          retries: 30
-          delay: 10
+    - name: Replace minikube kubelet config.json
+      shell: minikube cp ~/.docker/config.json /var/lib/kubelet/config.json

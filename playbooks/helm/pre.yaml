@@ -19,3 +19,11 @@
 
     - name: Replace minikube kubelet config.json
       shell: minikube cp ~/.docker/config.json /var/lib/kubelet/config.json
+
+    - name: Install buildset registry CA certificate in minikube
+      block:
+        - name: Copy the CA certificate from the host to minikube
+          command: "minikube cp /usr/local/share/ca-certificates/{{ buildset_registry_alias }}.crt /usr/local/share/ca-certificates/{{ buildset_registry_alias }}.crt"
+
+        - name: Run update-ca-certificates in minikube
+          command: "minikube ssh 'sudo update-ca-certificates'"

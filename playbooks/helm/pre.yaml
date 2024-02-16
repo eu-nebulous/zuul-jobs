@@ -9,6 +9,9 @@
     - name: Start minikube
       command: minikube start --cpus max --memory max --container-runtime cri-o
 
+    - name: Add buildset registry to minikube /etc/hosts
+      command: "minikube ssh 'echo -e \"\n{{ buildset_registry.host }}\tzuul-jobs.buildset-registry\" | sudo tee -a /etc/hosts'"
+
     - name: Replace minikube registries.conf
       block:
         - name: Copy registries.conf from the host to minikube

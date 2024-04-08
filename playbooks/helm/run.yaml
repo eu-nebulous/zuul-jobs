@@ -1,15 +1,25 @@
 - hosts: all
   tasks:
-    - name: Install helm charts
-      include_role:
-        name: helm-template
+    - name: Pull helm charts deps
+      command: "helm dependency build {{ helm_chart }}"
       vars:
-        helm_release_name: "{{ zj_item.key }}"
         helm_chart: "{{ zj_item.value }}"
-        helm_wait_for_pods: false  # we want this once and with more control
       loop: "{{ helm_charts | dict2items }}"
       loop_control:
         loop_var: 'zj_item'
+      args:
+        chdir: "{{ zuul.project.src_dir }}"
+
+    - name: Install helm charts
+      command: "helm install {{ helm_release_name }} {{ helm_chart }}"
+      vars:
+        helm_release_name: "{{ zj_item.key }}"
+        helm_chart: "{{ zj_item.value }}"
+      loop: "{{ helm_charts | dict2items }}"
+      loop_control:
+        loop_var: 'zj_item'
+      args:
+        chdir: "{{ zuul.project.src_dir }}"
 
     - name: Wait for the deployments
       command: kubectl wait --for=condition=Available --timeout=300s deployment --all

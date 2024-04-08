@@ -22,20 +22,6 @@
               # NOTE: hackish way to only run it when its definition changes
               # as no files exist in this repo that control its behaviour
               - ^never-existing-file$
-        - nebulous-component-template-apply-helm-charts:
-            vars:
-              zuul_work_dir: src/opendev.org/nebulous/component-template
-            required-projects:
-              - nebulous/component-template
-            files: &nebulous-component-template-apply-helm-charts-files
-              - ^playbooks/helm/
-              - ^playbooks/kubernetes/
-              - ^roles/check-pod-restarts/
-              - ^roles/collect-kubernetes-pods-logs/
-              - ^roles/collect-kubernetes-state/
-              - ^roles/ensure-minikube/
-        - opendev-buildset-registry:
-            files: *nebulous-component-template-apply-helm-charts-files
 
         # cross-testing with library-template
         - nebulous-library-template-build-java-libraries:
@@ -47,6 +33,18 @@
               - ^playbooks/java-libraries/
               - ^roles/install-jdk/
               - ^roles/install-maven/
+
+        # cross-testing the main helm gate
+        - nebulous-platform-apply-helm-charts:
+            files: &nebulous-component-template-apply-helm-charts-files
+              - ^playbooks/helm/
+              - ^playbooks/kubernetes/
+              - ^roles/check-pod-restarts/
+              - ^roles/collect-kubernetes-pods-logs/
+              - ^roles/collect-kubernetes-state/
+              - ^roles/ensure-minikube/
+        - opendev-buildset-registry:
+            files: *nebulous-component-template-apply-helm-charts-files
 
     gate:
       jobs: *check-jobs
